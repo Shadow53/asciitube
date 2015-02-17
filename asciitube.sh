@@ -1,5 +1,8 @@
 #!/bin/bash
 function prepare(){
+	old_dir=$(pwd)
+	shell_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+	cd $shell_dir
 	source scripts/prepare.sh
 	check_deps
 	install_dep
@@ -95,15 +98,15 @@ function play_vid(){
 			
 	## Actually play the video!
 	if [ $color = 'black' ] ; then
-		mplayer -vo aa:driver=curses -quiet -monitorpixelaspect 0.5 -x 1366 -y 768 /tmp/youtube-ascii/$id
+		mplayer -vo aa:driver=curses -quiet -monitorpixelaspect 0.5 /tmp/youtube-ascii/$id
 	elif [ $color = 'color' ] ; then
 		CACADRIVER=ncurses
-		mplayer -vo caca -quiet -x 1366 -y 768 /tmp/youtube-ascii/$id
+		mplayer -vo caca -quiet /tmp/youtube-ascii/$id
 	else
 		echo "Something went wrong. Exiting."
 	fi
 	
-	asciiTube
+	cd $old_dir
 }
 
 function asciiTube(){
