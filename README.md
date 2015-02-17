@@ -19,3 +19,12 @@ I am working on dependency recognition and installation for the main distributio
 - Streaming rather than downloading (if even possible)
 - Windows/Mac OS X versions
 	- I don't own a Mac so i can't do that myself. I will eventually be able to work on Windows though.
+
+# Systems with dependency-check compatibility
+*NOTE: All systems are compatible with this script. Users of these systems can have the libraries and programs they need installed by the script instead of manually.*
+- Ubuntu
+- Debian jessie/sid (certain packages are not available in wheezy or squeeze)
+- Fedora
+- openSUSE
+- Arch
+- Frugalware
