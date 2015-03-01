@@ -2,8 +2,8 @@
 
 ## Function for downloading youtube-dl
 function dl_youtube(){
-	wget -c 'https://yt-dl.org/downloads/2015.02.11/youtube-dl' -P /tmp/youtube-ascii/
-	chmod +x /tmp/youtube-ascii/youtube-dl
+	wget -c 'https://yt-dl.org/downloads/2015.02.11/youtube-dl' -P /tmp/asciitube/
+	chmod +x /tmp/asciitube/youtube-dl
 }
 
 ## Install missing youtube-dl

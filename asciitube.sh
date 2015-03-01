@@ -1,4 +1,24 @@
 #!/bin/bash
+
+function at_help(){
+cat << "EOF"
+    Usage:  asciitube.sh [options]
+    
+    Options:
+    -c              Use libcaca for colorized ASCII output
+    -b              Use aalib for black and white ASCII output
+    -s <query>      Search query (surround in quotes if there is a space)
+    
+EOF
+}
+
+function at_install(){
+    mkdir -p "/opt/asciitube/scripts"
+    install -m775 $(pwd)/asciitube.sh "/opt/asciitube/"
+    install -m775 $(pwd)/scripts/* "/opt/asciitube/scripts/"
+    ln -s /opt/asciitube/asciitube.sh /usr/bin/asciitube
+}
+
 function prepare(){
 	old_dir=$(pwd)
 	shell_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
@@ -37,8 +57,10 @@ function search(){
 }
 
 function first_search(){
-	echo -e "\nWhat would you like to watch?"
-	read -p '>> ' query
+	#if [ ! query ]; then
+            echo -e "\nWhat would you like to watch?"
+            read -p '>> ' query
+        #fi
 	offset=0
 	let num_results=$(($(tput lines)/3))
 	search
@@ -53,9 +75,9 @@ function dl_vid(){
 
 	## Use the youtube-dl tool to download the file to the temporary directory
 	if [ $yt_dl = 'system' ] ; then
-		youtube-dl -o /tmp/youtube-ascii/$id $url
+		youtube-dl -o /tmp/asciitube/$id $url
 	elif [ $yt_dl = 'temp' ] ; then
-		/tmp/youtube-ascii/youtube-dl -o /tmp/youtube-ascii/$id $url
+		/tmp/asciitube/youtube-dl -o /tmp/asciitube/$id $url
 	fi
 }
 
@@ -85,7 +107,7 @@ function color_pick(){
 
 function play_vid(){
 	## Do they want to be reminded/informed of the mplayer controls?
-	echo $'\nMPlayer uses certain keys to play/pause and seek videos in the terminal.\nWould you like to be reminded of what they are? [Y/n] ; then' ## $' interprets \n as a new line
+	echo $'\nMPlayer uses certain keys to play/pause and seek videos in the terminal.\nWould you like to be reminded of what they are? [Y/n]' ## $' interprets \n as a new line
 	read -p '>> ' reply
 	if [ $reply = 'Y' ] || [ $reply = 'y' ] || [ ! $reply ] ; then
 	   echo 'Play/Pause     =>   Space or p'
@@ -98,12 +120,13 @@ function play_vid(){
 			
 	## Actually play the video!
 	if [ $color = 'black' ] ; then
-		mplayer -vo aa:driver=curses -quiet -monitorpixelaspect 0.5 /tmp/youtube-ascii/$id
+		mplayer -vo aa:driver=curses -quiet -monitorpixelaspect 0.5 /tmp/asciitube/$id
 	elif [ $color = 'color' ] ; then
 		CACADRIVER=ncurses
-		mplayer -vo caca -quiet /tmp/youtube-ascii/$id
+		mplayer -vo caca -fs -quiet /tmp/asciitube/$id
 	else
 		echo "Something went wrong. Exiting."
+		exit
 	fi
 	
 	cd $old_dir
@@ -143,9 +166,13 @@ function asciiTube(){
 
 EOF
 
-	first_search
+	if [ ! $url ]; then
+            first_search
+        fi
 	dl_vid
-	color_pick
+	if [ ! $color ]; then
+            color_pick
+        fi
 	play_vid
 	clear
 }
@@ -155,8 +182,35 @@ EOF
 ##                    RUN THE ACTUAL PROGRAM HERE                   ##
 ##                                                                  ##
 ######################################################################
+while getopts cbs:ih flag; do
+    case $flag in
+        c)
+            color="color"
+            ;;
+        b)
+            color="black"
+            ;;
+        s)
+            query="$OPTARG"
+            ;;
+        i) 
+            if [ $EUID != 0 ] ; then
+                at_install
+            else
+                echo "Installing requires running as root. Exiting."
+            fi
+            ;;
+        h)
+            at_help
+            exit
+            ;;
+        ?/)
+            at_help
+            exit
+            ;;
+    esac
+done
+shift $((OPTIND-1)) # Honestly I'm not sure what this is for, but a tutorial I read had it so I included it
 
 prepare
 asciiTube
-
-echo "Thanks for watching!"
