@@ -5,7 +5,7 @@ source /etc/os-release
 
 ## Make compatible systems look the same for testing
 if [ $ID_LIKE ] && [ '$ID' != 'ubuntu' ] ; then
-	ID='$ID_LIKE'
+	ID=$ID_LIKE
 fi
 
 ## This is distro agnostic and few enough lines to include here
