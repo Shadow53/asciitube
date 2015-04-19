@@ -84,14 +84,14 @@ function install_yt_dl(){
 						sudo pacman -Sy youtube-dl
 					else
 						echo "Please enter root password"
-						result=$(su -c 'pacman -Sy youtube-dl')
+						result=$(su -c 'pacman -S youtube-dl')
 						if [ $result = '1' ] ; then
 							install_yt_dl
 						fi
 					fi
 				else
 					echo "Please enter root password"
-					result=$(su -c 'pacman -Sy youtube-dl')
+					result=$(su -c 'pacman -S youtube-dl')
 					if [ $result = '1' ] ; then
 						install_yt_dl
 					fi
@@ -99,7 +99,7 @@ function install_yt_dl(){
 			else
 				echo "Would you like to install to /tmp/asciitube? [Y/n]"
 				read reply
-				if [ $reply = 'Y' ] || [ $reply = 'y' ] ; then
+				if [ $reply = 'Y' ] || [ $reply = 'y' ] || [ ! $reply ] ; then
 					dl_youtube
 				elif [ $reply = 'N' ] || [ $reply = 'n' ] ; then
 					exit 1
@@ -111,7 +111,7 @@ function install_yt_dl(){
 		elif [ $reply = 'N' ] || [ $reply = 'n' ] ; then
 			echo "Would you like to install to /tmp/asciitube? [Y/n]"
 			read reply
-			if [ $reply = 'Y' ] || [ $reply = 'y' ] ; then
+			if [ $reply = 'Y' ] || [ $reply = 'y' ] || [ ! $reply ] ; then
 				dl_youtube
 			elif [ $reply = 'N' ] || [ $reply = 'n' ] ; then
 				exit 1

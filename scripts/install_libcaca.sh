@@ -77,14 +77,14 @@ function install_libcaca(){
 						sudo pacman -Sy libcaca
 					else
 						echo "Please enter root password"
-						result=$(su -c 'pacman -Sy libcaca')
+						result=$(su -c 'pacman -S libcaca')
 						if [ $result = '1' ] ; then
 							install_libcaca
 						fi
 					fi
 				else
 					echo "Please enter root password"
-					result=$(su -c 'pacman -Sy libcaca')
+					result=$(su -c 'pacman -S libcaca')
 					if [ $result = '1' ] ; then
 						install_libcaca
 					fi
@@ -92,12 +92,13 @@ function install_libcaca(){
 			
 			else
 				echo "Your distribution is not supported yet. Please install libcaca for your distribution and restart this script."
+				exit 1
 			fi
 		elif [ $reply = 'N' ] || [ $reply = 'n' ] ; then
 				exit 1
 		else
 			echo "Invalid input"
-			install_mplay
+			install_libcaca
 		fi
 	fi
 }

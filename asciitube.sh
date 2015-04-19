@@ -19,6 +19,10 @@ function at_install(){
     ln -s /opt/asciitube/asciitube.sh /usr/bin/asciitube
 }
 
+lowercase(){
+    echo $1 | tr '[:upper:]' '[:lower:]'
+}
+
 function prepare(){
 	old_dir=$(pwd)
 	shell_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
@@ -88,12 +92,12 @@ function color_pick(){
 	## Check which library they want to use
 	echo $'\nWould you like to have black and white [B] ; then or basic color [C] ; then output? (Default: B)' ## $' interprets \n as a new line
 	read -p '>> ' color
-
+        color=$(lowercase $color)
 	## Test first for empty string (default) then for black and white or color
 	if [ $color ] ; then
-		if [ $color = 'B' ] || [ $color = 'b' ] ; then
+		if [ $color = 'b' ] ; then
 			color='black'
-		elif [ $color = 'C' ] || [ $color = 'c' ] ; then
+		elif [ $color = 'c' ] ; then
 			color='color'
 		else
 			echo "Invalid input"
@@ -109,7 +113,7 @@ function play_vid(){
 	## Do they want to be reminded/informed of the mplayer controls?
 	echo $'\nMPlayer uses certain keys to play/pause and seek videos in the terminal.\nWould you like to be reminded of what they are? [Y/n]' ## $' interprets \n as a new line
 	read -p '>> ' reply
-	if [ $reply = 'Y' ] || [ $reply = 'y' ] || [ ! $reply ] ; then
+	if [ $reply = 'y' ] || [ ! $reply ] ; then
 	   echo 'Play/Pause     =>   Space or p'
 	   echo 'Seek forward   =>  Right arrow'
 	   echo 'Seek backward  =>   Left arrow'

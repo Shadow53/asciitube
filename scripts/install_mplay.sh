@@ -93,20 +93,21 @@ function install_mplay(){
 						sudo pacman -Sy mplayer
 					else
 						echo "Please enter root password"
-						result=$(su -c 'pacman -Sy mplayer')
+						result=$(su -c 'pacman -S mplayer')
 						if [ '$result' = '1' ] ; then
 							install_mplay
 						fi
 					fi
 				else
 					echo "Please enter root password"
-					result=$(su -c 'pacman -Sy mplayer')
+					result=$(su -c 'pacman -S mplayer')
 					if [ '$result' = '1' ] ; then
 						install_mplay
 					fi
 				fi
 			else
 				echo "Your distribution is not supported yet. Please install mplayer for your distribution and restart this script."
+				exit 1
 			fi
 		elif [ $reply = 'N' ] || [ $reply = 'n' ] ; then
 				exit 1

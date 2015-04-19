@@ -55,7 +55,7 @@ function install_npm(){
 				exit 1
 		else
 			echo "Invalid input"
-			install_mplay
+			install_npm
 		fi
 	fi
 }

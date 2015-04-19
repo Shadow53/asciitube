@@ -77,14 +77,14 @@ function install_nodejs(){
 						sudo pacman -Sy nodejs
 					else
 						echo "Please enter root password"
-						result=$(su -c 'pacman -Sy nodejs')
+						result=$(su -c 'pacman -S nodejs')
 						if [ $result = '1' ] ; then
 							install_nodejs
 						fi
 					fi
 				else
 					echo "Please enter root password"
-					result=$(su -c 'pacman -Sy nodejs')
+					result=$(su -c 'pacman -S nodejs')
 					if [ $result = '1' ] ; then
 						install_nodejs
 					fi
@@ -92,12 +92,13 @@ function install_nodejs(){
 			
 			else
 				echo "Your distribution is not supported yet. Please install nodejs for your distribution and restart this script."
+				exit 1
 			fi
 		elif [ $reply = 'N' ] || [ $reply = 'n' ] ; then
 				exit 1
 		else
 			echo "Invalid input"
-			install_mplay
+			install_nodejs
 		fi
 	fi
 }

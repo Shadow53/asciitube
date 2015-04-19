@@ -77,14 +77,14 @@ function install_aalib(){
 						sudo pacman -Sy aalib
 					else
 						echo "Please enter root password"
-						result=$(su -c 'pacman -Sy aalib')
+						result=$(su -c 'pacman -S aalib')
 						if [ $result = '1' ] ; then
 							install_aalib
 						fi
 					fi
 				else
 					echo "Please enter root password"
-					result=$(su -c 'pacman -Sy aalib')
+					result=$(su -c 'pacman -S aalib')
 					if [ $result = '1' ] ; then
 						install_aalib
 					fi
@@ -92,6 +92,7 @@ function install_aalib(){
 
 			else
 				echo "Your distribution is not supported yet. Please install aalib for your distribution and restart this script."
+				exit 1
 			fi
 			
 		elif [ $reply = 'N' ] || [ $reply = 'n' ] ; then

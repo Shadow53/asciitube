@@ -4,13 +4,57 @@
 source /etc/os-release
 
 ## Make compatible systems look the same for testing
-if [ $ID_LIKE ] && [ '$ID' != 'ubuntu' ] ; then
+if [ $ID_LIKE ] && [ $ID != 'ubuntu' ] ; then
 	ID=$ID_LIKE
 fi
+if [ $ID = 'solydxk'] ; then
+        ID='debian'
+fi
+if [ $ID = 'centos' ] ; then
+        echo "CentOS is not supported. It may be in the future, but in the meantime you will need to figure out installing dependencies yourself."
+        echo "Do you wish to continue? [y/N]"
+        read reply
+        reply=$(lowercase $reply)
+        if [ $reply != 'y' ] ; then
+            exit 1
+        fi
+fi
+
+function check_conflict(){
+        if [ $ID = 'debian' ] ; then
+                echo "Due to conflicts with a hamradio package's \"node\" binary in Debian, the \"node\" binary from Node.js was renamed from \"node\" to \"nodejs\", subsequently breaking the program for many users."
+                echo "I can link the \"nodejs\" binary to \"node\", since most people do not use said hamradio package. Would you like me to continue? [Y/n]"
+                read -p ">> " symlink
+                symlink=$(lowercase $symlink)
+                if [ $symlink = 'y' ] || [ ! $symlink ] ; then
+                        if [ -f /usr/bin/sudo ] ; then
+                                if [ $(sudo whoami) = 'root' ] ; then
+                                        sudo ln -s /usr/bin/nodejs /usr/bin/node
+                                else
+                                        echo "Please enter root password"
+                                        result=$(su -c 'ln -s /usr/bin/nodejs /usr/bin/node')
+                                        if [ '$result' = '1' ] ; then
+                                                echo "Please execute \"ln -s /usr/bin/nodejs /usr/bin/node\" as root and restart the script."
+                                                exit 1
+                                        fi
+                                fi
+                        else
+                                echo "Please enter root password"
+                                result=$(su -c 'ln -s /usr/bin/nodejs /usr/bin/node')
+                                if [ '$result' = '1' ] ; then
+                                        echo "Please execute \"ln -s /usr/bin/nodejs /usr/bin/node\" as root and restart the script."
+                                        exit 1
+                                fi
+                        fi
+                fi
+        fi
+        
+        
+}
 
 ## This is distro agnostic and few enough lines to include here
 function install_yt_search(){
-	if [ '$yt_search' = 'false' ] ; then
+	if [ $yt_search = 'false' ] ; then
 		if [ -f /usr/bin/sudo ] ; then
 			if [ $(sudo whoami) = 'root' ] ; then
 				sudo npm install ytsearch -g
@@ -100,7 +144,7 @@ function check_deps(){
 	fi
 
 	## Check for nodejs
-	if [ ! -f /usr/bin/nodejs ] && [ ! -f /usr/bin/node ]; then ## binary is called 'node' in Arch
+	if [ ! -f /usr/bin/nodejs ] && [ ! -f /usr/bin/node ]; then ## binary is called 'nodejs' in Debian and 'node' elsewhere. If using Debian, user can symlink to 'node'
 		echo "WARNING: nodejs not found"
 		node='false'
 	else
@@ -145,6 +189,8 @@ function install_dep(){
 	install_nodejs
 	install_npm
 	install_yt_search
+	
+	check_conflict
 }
 	
 ##				AALIB		LIBCACA			MPLAYER			NODEJS			YOUTUBE-DL
