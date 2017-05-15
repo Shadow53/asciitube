@@ -115,7 +115,7 @@ function check_deps(){
 
 		## Check for libcaca (deb)
 		if [ ! -f /usr/lib/x86_64-linux-gnu/libcaca.so.0 ] && [ ! -f /usr/lib/i386-linux-gnu/libcaca.so.0 ] ; then
-			echo "WARNING: libcaca not found"t
+			echo "WARNING: libcaca not found"
 			libcaca='false'
 		else
 			libcaca='true'
@@ -135,7 +135,7 @@ function check_deps(){
 
 		## Check for libcaca
 		if [ ! -f /usr/lib/libcaca.so.0 ] ; then
-			echo "WARNING: libcaca not found"t
+			echo "WARNING: libcaca not found"
 			libcaca='false'
 		else
 			libcaca='true'
